@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h1>Home Template</h1>
+<div>
+  <div>
+    {% for guide in guides %}
+      <h5>
+        {{guide.id}} - <a href="{% url 'guide' guide.id %}">{{guide.name}}</a>
+      </h5>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
