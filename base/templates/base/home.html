@@ -1,15 +1,49 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<h1>Home Template</h1>
-<div>
-  <div>
-    {% for guide in guides %}
-      <h5>
-        {{guide.id}} - <a href="{% url 'guide' guide.id %}">{{guide.name}}</a>
-      </h5>
-    {% endfor %}
-  </div>
+<style>
+    .home-container{
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+    }
+</style>
+<div class="home-container">
+    <div>
+        <h3>Browse Parks</h3>
+        <hr>
+        <div>
+            <a href="{% url 'home' %}">All</a>
+        </div>
+        {% for park in parks %}
+            <div>
+                <a href="{% url 'home'%}?q={{park.name}}">{{park.name}}</a>
+            </div>
+        {% endfor %}
+    </div>
+    <div>
+        <h5>{{guide_count}} guides available</h5>
+        <a href="{% url 'create-guide' %}">Create Guide</a>
+        <div>
+            {% for guide in guides %}
+                <h5>
+                    <a href="{% url 'guide' guide.id %}">{{ guide }}</a>
+                    <span>
+                        {% if guide.rating_set %}
+                            {{ guide.rating }}
+                        {% else %}
+                            No ratings yet!
+                        {% endif %}
+                    </span>
+                </h5>
+                <p>
+                    {{guide.description}}
+                </p>
+
+                <a href="{% url 'update-guide' guide.id %}">Edit Guide</a>
+                <a href="{% url 'delete-guide' guide.id %}">Delete Guide</a>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}
