@@ -9,7 +9,7 @@ def home(request):
         Q(parks__name__icontains=q) |
         Q(first_name__icontains=q) |
         Q(description__icontains=q)
-        )
+        ).distinct()
     parks = Park.objects.all()
     guide_count = guides.count
 
