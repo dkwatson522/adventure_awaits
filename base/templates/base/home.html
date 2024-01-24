@@ -29,7 +29,7 @@
                     <a href="{% url 'guide' guide.id %}">{{ guide }}</a>
                     <span>
                         {% if guide.rating_set %}
-                            {{ guide.rating }}
+                            {{ guide.id }}
                         {% else %}
                             No ratings yet!
                         {% endif %}
