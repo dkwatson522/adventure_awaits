@@ -1,43 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
+class ThemePark(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
 
 class Guide(models.Model):
-    first_name = models.CharField(max_length=200, null=True, blank=False)
-    last_name = models.CharField(max_length=200, null=True, blank=False)
-    description = models.TextField(null=True, blank=True)
-    updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
-    parks = models.ManyToManyField('Park', related_name='parks', null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField()
+    parks = models.ManyToManyField(ThemePark)
 
-    class Meta:
-        ordering = ['updated', 'created']
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-
-class Rating(models.Model):
+class Booking(models.Model):
     guide = models.ForeignKey(Guide, on_delete=models.CASCADE)
-    rating = models.IntegerField(
-        choices=[
-            (1, '1 Star'),
-            (2, '2 Stars'),
-            (3, '3 Stars'),
-            (4, '4 Stars'),
-            (5, '5 Stars'),
-        ]
-    )
-    feedback = models.TextField(null=True, blank=True)
-    updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
+    visitor = models.ForeignKey(User, on_delete=models.CASCADE)
+    theme_park = models.ForeignKey(ThemePark, on_delete=models.CASCADE)
+    date = models.DateField()
 
-    def __str__(self):
-        return self.feedback[0:50]
-
-class Park(models.Model):
-    name = models.CharField(max_length=200)
-    description = models.CharField(max_length=200)
-    guides = models.ManyToManyField(Guide, related_name='guides', null=True)
-
-class GuideParkRelationship(models.Model):
-    guide = models.ForeignKey(Guide, on_delete=models.CASCADE, null=True)
-    park = models.ForeignKey(Park, on_delete=models.CASCADE, null=True)
+class Feedback(models.Model):
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField()
